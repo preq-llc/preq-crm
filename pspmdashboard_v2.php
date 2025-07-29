@@ -1,0 +1,1496 @@
+<?php
+$page = 'dashboard';
+include('function/session.php');
+include('config.php');
+
+?>
+<input type="text" id="current_username" value="<?php echo $logged_in_user_name; ?>" hidden>
+<!doctype html>
+<html lang="en" data-layout="horizontal" data-topbar="dark" data-sidebar-size="lg" data-sidebar="light" data-sidebar-image="none" data-preloader="disable">
+
+
+<head>
+
+    <meta charset="utf-8" />
+    <title>Dashboard | <?php echo $site_name; ?> - Dialer CRM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Premium Multipurpose Dialer CRM" name="description" />
+    <meta content="Themesbrand" name="author" />
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+    <!-- jsvectormap css -->
+    <link href="assets/libs/jsvectormap/css/jsvectormap.min.css" rel="stylesheet" type="text/css" />
+
+    <!--Swiper slider css-->
+    <link href="assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- Layout config Js -->
+    <script src="assets/js/layout.js"></script>
+    <!-- Bootstrap Css -->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <!-- Icons Css -->
+    <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <!-- App Css-->
+    <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" />
+    <!-- custom Css-->
+    <link href="assets/css/custom.min.css" rel="stylesheet" type="text/css" />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.css"/> -->
+    <!-- <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" /> -->
+    <link rel="stylesheet" href="assets/css/toastr.min.css">
+
+</head>
+<style>
+    .counter-value {
+        font-size: 30px;
+    }
+</style>
+
+<body>
+
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+
+        <?php include('template/header.php'); ?>
+
+        <!-- removeNotificationModal -->
+        <div id="removeNotificationModal" class="modal fade zoomIn" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="NotificationModalbtn-close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mt-2 text-center">
+                            <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
+                            <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                                <h4>Are you sure ?</h4>
+                                <p class="text-muted mx-4 mb-0">Are you sure you want to remove this Notification ?</p>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
+                            <button type="button" class="btn w-sm btn-light" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn w-sm btn-danger" id="delete-notification">Yes, Delete It!</button>
+                        </div>
+                    </div>
+
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <?php include('template/navbar.php'); ?>
+        <!-- Left Sidebar End -->
+        <!-- Vertical Overlay-->
+        <div class="vertical-overlay"></div>
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <div class="main-content">
+
+            <div class="page-content">
+                <div class="container-fluid">
+
+                    <div class="row">
+                        <div class="col">
+
+                            <div class="h-100">
+                                <div class="row mb-3 pb-1">
+                                    <div class="col-12">
+                                        <div class="d-flex align-items-lg-center flex-lg-row flex-column">
+                                            <div class="flex-grow-1">
+                                                <h4 class="fs-16 mb-1">Welcome Back, <?php echo $logged_in_user_name; ?>!</h4>
+                                                <p class="text-muted mb-0">Here's what's happening with Dialer
+                                                    today.</p>
+
+                                            </div>
+                                            <div class="mt-3 mt-lg-0">
+                                                <form action="javascript:void(0);">
+                                                    <div class="row g-3 mb-0 align-items-center">
+                                                        <!-- <div class="col-sm-auto">
+                                                            <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                                                                <i class="fa fa-calendar"></i>&nbsp;
+                                                                <span></span> <i class="fa fa-caret-down"></i>
+                                                            </div>
+                                                        </div> -->
+                                                        <div class="col-sm-auto">
+                                                            <div class="form-group">
+                                                                <!-- <label for="">Start date</label> -->
+                                                                <input type="date" id="startDate" value="<?php echo $today_date; ?>" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-auto">
+                                                            <div class="form-group">
+                                                                <!-- <label for="">End date</label> -->
+                                                                <input type="date" id="endDate" value="<?php echo $today_date; ?>" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-auto">
+                                                            <div class="form-group">
+                                                                <select name="" id="campaign" class="form-select">
+                                                                    <option value="">-- Choose Campaign --</option>
+
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-auto">
+                                                            <select name="" id="call_center" class="form-select">
+                                                                <!-- <option value="">-- Choose Center --</option>
+                                                                            <option value="MAL">MAL</option>
+                                                                            <option value="MED">MED</option> -->
+                                                                <?php
+                                                                // echo $single_callcenter;
+                                                                $single_callcenter = explode(",", $logged_in_user_group);
+                                                                // print_r($single_callcenter);
+                                                                if ($logged_in_user_role == "teamleader" || $logged_in_user_role == "superadmin") {
+                                                                    echo '<option value="" selected>-- ALL --</option>';
+                                                                }
+                                                                $centercount = 0;
+                                                                foreach ($single_callcenter as $center) {
+                                                                    if ($center) {
+                                                                        echo '<option value="' . trim($center) . '">' . trim($center) . '</option>';
+                                                                    }
+                                                                    $centercount++;
+                                                                }
+                                                                if ($centercount == 0) {
+                                                                    echo '<option value="" selected>-- Choose Center --</option>';
+                                                                }
+
+                                                                // if ($logged_in_user_group == 'ZD25' || $logged_in_user_group == 'ZD26') {
+
+                                                                // echo '<option value="' . $logged_in_user_group . '">' . $logged_in_user_group . '</option>';
+
+                                                                // } else {
+                                                                // echo '
+
+                                                                // ';
+                                                                // }
+                                                                ?>
+                                                            </select>
+                                                        </div>
+                                                        <!--end col-->
+                                                        <div class="col-auto">
+                                                            <button type="button" class="btn btn-soft-success" id="getRecord"><i class="ri-add-circle-line align-middle me-1"></i>
+                                                                Get Record
+                                                            </button>
+                                                        </div>
+                                                        <!--end col-->
+                                                        <!-- <div class="col-auto">
+                                                            <button type="button" class="btn btn-soft-info btn-icon waves-effect waves-light layout-rightside-btn"><i class="ri-pulse-line"></i></button>
+                                                        </div> -->
+                                                        <!--end col-->
+                                                    </div>
+                                                    <!--end row-->
+                                                </form>
+                                            </div>
+                                        </div><!-- end card header -->
+                                    </div>
+                                    <!--end col-->
+                                </div>
+                                <!--end row-->
+
+                                <div class="row">
+                                    <div class="col-xl-12">
+                                        <div class="d-flex flex-column h-150">
+                                            <div class="row" id="leadReportResult">
+                                                <div class="col-xl-3 col-md-2 dispoStatsCard" style="cursor:pointer;">
+                                                        <div class="card card-animate overflow-hidden">
+                                                            <div class="position-absolute start-0" style="z-index: 0;">
+                                                                <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" width="200" height="150">
+                                                                    <style>
+                                                                        .s0 {
+                                                                            opacity: .05;
+                                                                            fill: var(--vz-secondary)
+                                                                        }
+                                                                    </style>
+                                                                    <path id="Shape 8" class="s0" d="m189.5-25.8c0 0 20.1 46.2-26.7 71.4 0 0-60 15.4-62.3 65.3-2.2 49.8-50.6 59.3-57.8 61.5-7.2 2.3-60.8 0-60.8 0l-11.9-199.4z"></path>
+                                                                </svg>
+                                                            </div>
+                                                            <div class="card-body" style="z-index:1 ;height:125px ">
+                                                                <div class="d-flex align-items-center">
+                                                                    <div class="flex-grow-1 overflow-hidden">
+                                                                        <p class="text-uppercase fw-medium text-muted text-truncate mb-3">TRANSFER</p>
+                                                                        <h1 class="ff-secondary mb-0"><span class="overalltra">0</span></h1>
+                                                                        
+                                                                    </div>
+
+                                                                </div>
+                                                            </div><!-- end card body -->
+                                                        </div><!-- end card -->
+                                                </div>
+                                                <div class="col-xl-3 col-md-2 dispoStatsCard" style="cursor:pointer;">
+                                                        <div class="card card-animate overflow-hidden">
+                                                            <div class="position-absolute start-0" style="z-index: 0;">
+                                                                <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" width="200" height="150">
+                                                                    <style>
+                                                                        .s0 {
+                                                                            opacity: .05;
+                                                                            fill: var(--vz-secondary)
+                                                                        }
+                                                                    </style>
+                                                                    <path id="Shape 8" class="s0" d="m189.5-25.8c0 0 20.1 46.2-26.7 71.4 0 0-60 15.4-62.3 65.3-2.2 49.8-50.6 59.3-57.8 61.5-7.2 2.3-60.8 0-60.8 0l-11.9-199.4z"></path>
+                                                                </svg>
+                                                            </div>
+                                                            <div class="card-body" style="z-index:1 ;height:125px">
+                                                                <div class="d-flex align-items-center">
+                                                                    <div class="flex-grow-1 overflow-hidden">
+                                                                        <p class="text-uppercase fw-medium text-muted text-truncate mb-3">TPH</p>
+                                                                        <h1 class="ff-secondary mb-0"><span class="overalltph">0</span></h1>
+                                                                        
+                                                                    </div>
+
+                                                                </div>
+                                                            </div><!-- end card body -->
+                                                        </div><!-- end card -->
+                                                </div>
+                                                <div class="col-xl-3 col-md-2 dispoStatsCard" style="cursor:pointer;">
+                                                        <div class="card card-animate overflow-hidden">
+                                                            <div class="position-absolute start-0" style="z-index: 0;">
+                                                                <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" width="200" height="150">
+                                                                    <style>
+                                                                        .s0 {
+                                                                            opacity: .05;
+                                                                            fill: var(--vz-secondary)
+                                                                        }
+                                                                    </style>
+                                                                    <path id="Shape 8" class="s0" d="m189.5-25.8c0 0 20.1 46.2-26.7 71.4 0 0-60 15.4-62.3 65.3-2.2 49.8-50.6 59.3-57.8 61.5-7.2 2.3-60.8 0-60.8 0l-11.9-199.4z"></path>
+                                                                </svg>
+                                                            </div>
+                                                            <div class="card-body" style="z-index:1 ;height:125px">
+                                                                <div class="d-flex align-items-center">
+                                                                    <div class="flex-grow-1 overflow-hidden">
+                                                                        <p class="text-uppercase fw-medium text-muted text-truncate mb-3">BILLABLE</p>
+                                                                        <h1 class="ff-secondary mb-0"><span class="overallbillable">0</span></h1>
+                                                                        
+                                                                    </div>
+
+                                                                </div>
+                                                            </div><!-- end card body -->
+                                                        </div><!-- end card -->
+                                                </div>
+                                                <div class="col-xl-3 col-md-2 dispoStatsCard" style="cursor:pointer;">
+                                                        <div class="card card-animate overflow-hidden">
+                                                            <div class="position-absolute start-0" style="z-index: 0;">
+                                                                <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" width="200" height="150">
+                                                                    <style>
+                                                                        .s0 {
+                                                                            opacity: .05;
+                                                                            fill: var(--vz-secondary)
+                                                                        }
+                                                                    </style>
+                                                                    <path id="Shape 8" class="s0" d="m189.5-25.8c0 0 20.1 46.2-26.7 71.4 0 0-60 15.4-62.3 65.3-2.2 49.8-50.6 59.3-57.8 61.5-7.2 2.3-60.8 0-60.8 0l-11.9-199.4z"></path>
+                                                                </svg>
+                                                            </div>
+                                                            <div class="card-body" style="z-index:1 ;height:125px">
+                                                                <div class="d-flex align-items-center">
+                                                                    <div class="flex-grow-1 overflow-hidden">
+                                                                        <p class="text-uppercase fw-medium text-muted text-truncate mb-3">BPH</p>
+                                                                        <h1 class="ff-secondary mb-0"><span class="overallbph">0</span></h1>
+                                                                        
+                                                                    </div>
+
+                                                                </div>
+                                                            </div><!-- end card body -->
+                                                        </div><!-- end card -->
+                                                </div>
+                                            </div><!--end row-->
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-xl-3 col-md-6">
+                                        <!-- card -->
+                                        <div class="card card-animate">
+                                            <div class="card-body">
+                                                <div class="position-absolute start-0" style="z-index: 0;">
+                                                                <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" width="200" height="150">
+                                                                    <style>
+                                                                        .s0 {
+                                                                            opacity: .05;
+                                                                            fill: var(--vz-secondary)
+                                                                        }
+                                                                    </style>
+                                                                    <path id="Shape 8" class="s0" d="m189.5-25.8c0 0 20.1 46.2-26.7 71.4 0 0-60 15.4-62.3 65.3-2.2 49.8-50.6 59.3-57.8 61.5-7.2 2.3-60.8 0-60.8 0l-11.9-199.4z"></path>
+                                                                </svg>
+                                                    </div>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0">
+                                                            AGENT</p>
+                                                    </div>
+                                                    <!-- <div class="flex-shrink-0">
+                                                        <h5 class="text-success fs-14 mb-0">
+                                                            <i class="ri-arrow-right-up-line fs-13 align-middle"></i>
+                                                            +16.24 %
+                                                        </h5>
+                                                    </div> -->
+                                                </div>
+                                                <div class="d-flex align-items-end justify-content-between mt-4">
+                                                    <div>
+                                                        <h4 class="fs-22 fw-semibold ff-secondary mb-4">
+                                                            <!-- $ -->
+                                                            <span class="counter-value" id="total_agent" data-target="0">0</span>
+                                                        </h4>
+                                                        <!-- <a href="#" class="text-decoration-underline text-muted">Total Agents</a> -->
+                                                    </div>
+                                                    <div class="avatar-sm flex-shrink-0">
+                                                        <span class="avatar-title bg-warning-subtle rounded fs-3">
+                                                            <i class="bx bx-user-circle text-warning"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div><!-- end card body -->
+                                        </div><!-- end card -->
+                                    </div><!-- end col -->
+
+                                    <div class="col-xl-3 col-md-6">
+                                        <!-- card -->
+                                        <div class="card card-animate">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0">
+                                                            ACTIVE AGENT</p>
+                                                    </div>
+                                                    <!-- <div class="flex-shrink-0">
+                                                        <h5 class="text-danger fs-14 mb-0">
+                                                            <i class="ri-arrow-right-down-line fs-13 align-middle"></i>
+                                                            -3.57 %
+                                                        </h5>
+                                                    </div> -->
+                                                </div>
+                                                <div class="d-flex align-items-end justify-content-between mt-4">
+                                                    <div>
+                                                        <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="0" id="active_agent">0</span></h4>
+                                                        <!-- <a href="#" class="text-decoration-underline text-muted">Currently Active Agents</a> -->
+                                                    </div>
+                                                    <div class="avatar-sm flex-shrink-0">
+                                                        <span class="avatar-title bg-info-subtle rounded fs-3">
+                                                            <i class='bx bxs-user-voice text-success'></i>
+
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div><!-- end card body -->
+                                        </div><!-- end card -->
+                                    </div><!-- end col -->
+
+                                    <div class="col-xl-3 col-md-6">
+                                        <!-- card -->
+                                        <div class="card card-animate">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0">
+                                                            HOURS</p>
+                                                    </div>
+                                                    <!-- <div class="flex-shrink-0">
+                                                        <h5 class="text-success fs-14 mb-0">
+                                                            <i class="ri-arrow-right-up-line fs-13 align-middle"></i>
+                                                            +29.08 %
+                                                        </h5>
+                                                    </div> -->
+                                                </div>
+                                                <div class="d-flex align-items-end justify-content-between mt-4">
+                                                    <div>
+                                                        <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="0" id="total_hrs">0</span>
+                                                        </h4>
+                                                        <!-- <a href="#" class="text-decoration-underline text-muted">Total Hours</a> -->
+                                                    </div>
+                                                    <div class="avatar-sm flex-shrink-0">
+                                                        <span class="avatar-title bg-info-subtle rounded fs-3">
+                                                            <i class="bx bx-time text-info"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div><!-- end card body -->
+                                        </div><!-- end card -->
+                                    </div><!-- end col -->
+
+                                    <div class="col-xl-3 col-md-6">
+                                        <!-- card -->
+                                        <div class="card card-animate">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0">
+                                                            TOTAL CALLS</p>
+                                                    </div>
+                                                    <!-- <div class="flex-shrink-0">
+                                                        <h5 class="text-muted fs-14 mb-0">
+                                                            +0.00 %
+                                                        </h5>
+                                                    </div> -->
+                                                </div>
+                                                <div class="d-flex align-items-end justify-content-between mt-4">
+                                                    <div>
+                                                        <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="0" id="total_calls">0</span>
+                                                        </h4>
+                                                        <!-- <a href="#" class="text-decoration-underline text-muted">Total Calls</a> -->
+                                                    </div>
+                                                    <div class="avatar-sm flex-shrink-0">
+                                                        <span class="avatar-title bg-danger-subtle rounded fs-3">
+                                                            <i class="bx bx-headphone text-danger"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div><!-- end card body -->
+                                        </div><!-- end card -->
+                                    </div><!-- end col -->
+                                    <div class="col-xl-3 col-md-6">
+                                        <!-- card -->
+                                        <div class="card card-animate">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0">
+                                                            ACA TRANSFER</p>
+                                                    </div>
+                                                    <!-- <div class="flex-shrink-0">
+                                                        <h5 class="text-success fs-14 mb-0">
+                                                            <i class="ri-arrow-right-up-line fs-13 align-middle"></i>
+                                                            +16.24 %
+                                                        </h5>
+                                                    </div> -->
+                                                </div>
+                                                <div class="d-flex align-items-end justify-content-between mt-4">
+                                                    <div>
+                                                        <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="0" id="total_transfer">0</span>
+                                                        </h4>
+                                                        <!-- <a href="#" class="text-decoration-underline text-muted">Total Transfer</a> -->
+                                                    </div>
+                                                    <div class="avatar-sm flex-shrink-0">
+                                                        <span class="avatar-title bg-danger-subtle rounded fs-3">
+                                                            <i class="bx bx-transfer text-danger"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div><!-- end card body -->
+                                        </div><!-- end card -->
+                                    </div><!-- end col -->
+
+                                    <?php
+
+                                    if ($logged_in_user_name != 'PSPM') {
+
+                                    ?>
+                                        <div class="col-xl-3 col-md-6">
+                                            <!-- card -->
+                                            <div class="card card-animate">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex-grow-1 overflow-hidden">
+                                                            <p class="text-uppercase fw-medium text-muted text-truncate mb-0">
+                                                                ACA Billable</p>
+                                                        </div>
+                                                        <!-- <div class="flex-shrink-0">
+                                                        <h5 class="text-danger fs-14 mb-0">
+                                                            <i class="ri-arrow-right-down-line fs-13 align-middle"></i>
+                                                            -3.57 %
+                                                        </h5>
+                                                    </div> -->
+                                                    </div>
+                                                    <div class="d-flex align-items-end justify-content-between mt-4">
+                                                        <div>
+                                                            <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="0" id="total_billable">0</span></h4>
+                                                            <!-- <a href="#" class="text-decoration-underline text-muted">Billable Count</a> -->
+                                                        </div>
+                                                        <div class="avatar-sm flex-shrink-0">
+                                                            <span class="avatar-title bg-success-subtle rounded fs-3">
+                                                                <i class="bx bx-dollar-circle text-success"></i>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div><!-- end card body -->
+                                            </div><!-- end card -->
+                                        </div><!-- end col -->
+                                    <?php } ?>
+                                    <div class="col-xl-3 col-md-6">
+                                        <!-- card -->
+                                        <div class="card card-animate">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0">
+                                                            ACA TPH</p>
+                                                    </div>
+                                                    <!-- <div class="flex-shrink-0">
+                                                        <h5 class="text-success fs-14 mb-0">
+                                                            <i class="ri-arrow-right-up-line fs-13 align-middle"></i>
+                                                            +29.08 %
+                                                        </h5>
+                                                    </div> -->
+                                                </div>
+                                                <div class="d-flex align-items-end justify-content-between mt-4">
+                                                    <div>
+                                                        <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="0" id="tph_percent">0</span>
+                                                        </h4>
+                                                        <!-- <a href="#" class="text-decoration-underline text-muted">TPH %</a> -->
+                                                    </div>
+                                                    <div class="avatar-sm flex-shrink-0">
+                                                        <span class="avatar-title bg-primary-subtle rounded fs-3">
+                                                            <i class='bx bx-receipt text-primary'></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div><!-- end card body -->
+                                        </div><!-- end card -->
+                                    </div><!-- end col -->
+
+                                    <?php
+
+                                    if ($logged_in_user_name != 'PSPM') {
+
+                                    ?>
+                                        <div class="col-xl-3 col-md-6">
+                                            <!-- card -->
+                                            <div class="card card-animate">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex-grow-1 overflow-hidden">
+                                                            <p class="text-uppercase fw-medium text-muted text-truncate mb-0">
+                                                                ACA BPH</p>
+                                                        </div>
+                                                        <!-- <div class="flex-shrink-0">
+                                                        <h5 class="text-muted fs-14 mb-0">
+                                                            +0.00 %
+                                                        </h5>
+                                                    </div> -->
+                                                    </div>
+                                                    <div class="d-flex align-items-end justify-content-between mt-4">
+                                                        <div>
+                                                            <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="0" id="bph_percent">0</span>
+                                                            </h4>
+                                                            <!-- <a href="#" class="text-decoration-underline text-muted">BPH %</a> -->
+                                                        </div>
+                                                        <div class="avatar-sm flex-shrink-0">
+
+                                                            <span class="avatar-title bg-warning-subtle rounded fs-3">
+                                                                <i class='bx bx-purchase-tag-alt text-warning'></i>
+                                                            </span>
+
+                                                        </div>
+                                                    </div>
+                                                </div><!-- end card body -->
+                                            </div><!-- end card -->
+                                        </div><!-- end col -->
+                                        <div class="col-xl-3 col-md-6">
+                                            <!-- card -->
+                                            <div class="card card-animate">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex-grow-1 overflow-hidden">
+                                                            <p class="text-uppercase fw-medium text-muted text-truncate mb-0">
+                                                                MED DS TRANSFER</p>
+                                                        </div>
+                                                        <!-- <div class="flex-shrink-0">
+                                                        <h5 class="text-success fs-14 mb-0">
+                                                            <i class="ri-arrow-right-up-line fs-13 align-middle"></i>
+                                                            +16.24 %
+                                                        </h5>
+                                                    </div> -->
+                                                    </div>
+                                                    <div class="d-flex align-items-end justify-content-between mt-4">
+                                                        <div>
+                                                            <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="0" id="medds_transfer">0</span>
+                                                            </h4>
+                                                            <!-- <a href="#" class="text-decoration-underline text-muted">Total Transfer</a> -->
+                                                        </div>
+                                                        <div class="avatar-sm flex-shrink-0">
+                                                            <span class="avatar-title bg-danger-subtle rounded fs-3">
+                                                                <i class="bx bx-transfer text-danger"></i>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div><!-- end card body -->
+                                            </div><!-- end card -->
+                                        </div><!-- end col -->
+                                        <div class="col-xl-3 col-md-6">
+                                            <!-- card -->
+                                            <div class="card card-animate">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex-grow-1 overflow-hidden">
+                                                            <p class="text-uppercase fw-medium text-muted text-truncate mb-0">
+                                                                MED DS Billable</p>
+                                                        </div>
+                                                        <!-- <div class="flex-shrink-0">
+                                                        <h5 class="text-danger fs-14 mb-0">
+                                                            <i class="ri-arrow-right-down-line fs-13 align-middle"></i>
+                                                            -3.57 %
+                                                        </h5>
+                                                    </div> -->
+                                                    </div>
+                                                    <div class="d-flex align-items-end justify-content-between mt-4">
+                                                        <div>
+                                                            <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="0" id="total_billable">0</span></h4>
+                                                            <!-- <a href="#" class="text-decoration-underline text-muted">Billable Count</a> -->
+                                                        </div>
+                                                        <div class="avatar-sm flex-shrink-0">
+                                                            <span class="avatar-title bg-success-subtle rounded fs-3">
+                                                                <i class="bx bx-dollar-circle text-success"></i>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div><!-- end card body -->
+                                            </div><!-- end card -->
+                                        </div><!-- end col -->
+                                        <div class="col-xl-3 col-md-6">
+                                            <!-- card -->
+                                            <div class="card card-animate">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex-grow-1 overflow-hidden">
+                                                            <p class="text-uppercase fw-medium text-muted text-truncate mb-0">
+                                                                MED DS TPH</p>
+                                                        </div>
+                                                        <!-- <div class="flex-shrink-0">
+                                                        <h5 class="text-success fs-14 mb-0">
+                                                            <i class="ri-arrow-right-up-line fs-13 align-middle"></i>
+                                                            +29.08 %
+                                                        </h5>
+                                                    </div> -->
+                                                    </div>
+                                                    <div class="d-flex align-items-end justify-content-between mt-4">
+                                                        <div>
+                                                            <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="0" id="meddstph_percent">0</span>
+                                                            </h4>
+                                                            <!-- <a href="#" class="text-decoration-underline text-muted">TPH %</a> -->
+                                                        </div>
+                                                        <div class="avatar-sm flex-shrink-0">
+                                                            <span class="avatar-title bg-primary-subtle rounded fs-3">
+                                                                <i class='bx bx-receipt text-primary'></i>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div><!-- end card body -->
+                                            </div><!-- end card -->
+                                        </div><!-- end col -->
+                                        <div class="col-xl-3 col-md-6">
+                                            <!-- card -->
+                                            <div class="card card-animate">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex-grow-1 overflow-hidden">
+                                                            <p class="text-uppercase fw-medium text-muted text-truncate mb-0">
+                                                                MED DS BPH</p>
+                                                        </div>
+                                                        <!-- <div class="flex-shrink-0">
+                                                        <h5 class="text-muted fs-14 mb-0">
+                                                            +0.00 %
+                                                        </h5>
+                                                    </div> -->
+                                                    </div>
+                                                    <div class="d-flex align-items-end justify-content-between mt-4">
+                                                        <div>
+                                                            <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="0" id="bph_percent">0</span>
+                                                            </h4>
+                                                            <!-- <a href="#" class="text-decoration-underline text-muted">BPH %</a> -->
+                                                        </div>
+                                                        <div class="avatar-sm flex-shrink-0">
+
+                                                            <span class="avatar-title bg-warning-subtle rounded fs-3">
+                                                                <i class='bx bx-purchase-tag-alt text-warning'></i>
+                                                            </span>
+
+                                                        </div>
+                                                    </div>
+                                                </div><!-- end card body -->
+                                            </div><!-- end card -->
+                                        </div><!-- end col -->
+                                    <?php } ?>
+                                </div> <!-- end row-->
+
+                                <div class="row">
+                                    <div class="col-xl-12">
+                                        <div class="card">
+                                            <div class="card-header align-items-center d-flex">
+                                                <h4 class="card-title mb-0 flex-grow-1">AGENT SUMMARY</h4>
+                                                <div class="flex-shrink-0">
+
+                                                    <select class="form-select form-select-sm" id="report_type" aria-label=".form-select-sm example" data-user="<?php echo $logged_in_user_name ?>">
+                                                        <option value="agent">Agent wise</option>
+                                                        <?php
+                                                        if ($logged_in_user_role == "superadmin") {
+
+                                                        ?>
+                                                            <option value="callcenter">Call Center</option>
+                                                        <?php
+
+                                                        }
+                                                        ?>
+                                                        <!-- <option value="subcallcenter">Sub Call Center</option> -->
+                                                    </select>
+
+                                                </div>
+                                                <div class="flex-shrink-0">
+
+                                                    <button type="button" id="export_excel" class="btn btn-soft-info btn-sm">
+                                                        <i class="ri-file-list-3-line align-middle"></i> Download Report
+                                                    </button>
+                                                </div>
+                                            </div><!-- end card header -->
+
+                                            <div class="card-body">
+                                                <div class="table-responsive table-card">
+                                                    <table id="export_table" class="table table-hover table-borderless table-centered align-middle table-nowrap mb-0">
+                                                        <thead class="text-muted table-light tablehead">
+                                                            <tr>
+                                                                <th scope="col">Campaign Name</th>
+                                                                <th scope="col">Agent ID</th>
+                                                                <th scope="col">Agent Name</th>
+                                                                <th scope="col">Total Hours</th>
+                                                                <th scope="col">Total Calls</th>
+                                                                <th scope="col">Transfer</th>
+
+                                                                <?php if ($logged_in_user_name != 'PSPM'): ?>
+                                                                    <th scope="col">Billable</th>
+                                                                <?php endif; ?>
+                                                                <th scope="col">MED DS Transfer</th>
+                                                                <th scope="col">TPH</th>
+
+                                                                <?php if ($logged_in_user_name != 'PSPM'): ?>
+                                                                    <th scope="col">BPH</th>
+                                                                    
+                                                                <?php endif; ?>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="table_result">
+                                                            <tr>
+                                                                <td colspan="8" class="text-center">NO Record Found</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table><!-- end table -->
+                                                </div>
+                                            </div>
+                                        </div> <!-- .card-->
+                                    </div> <!-- .col-->
+                                </div>
+                            </div> <!-- end .h-100-->
+                        </div> <!-- end col -->
+                    </div>
+                </div>
+                <!-- container-fluid -->
+            </div>
+            <!-- End Page-content -->
+
+            <?php include('template/footer.php'); ?>
+        </div>
+        <!-- end main content-->
+
+    </div>
+    <!-- END layout-wrapper -->
+        <div id="userstatus" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-w75">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="username"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
+                </div>
+                <div class="modal-body">
+                    <div style="overflow-x: auto;">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Count</th>
+                                    <th>Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody class="userstatusdetails">
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Total</th>
+                                    <th class="total-count"></th>
+                                    <th>100%</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table id="export_table_datewise" class="table table-bordered table-hover" style="display:none;">
+        <thead>
+            <tr style="background:#d0d0d0; font-weight:bold;">
+                <th>Date</th>
+                <th>Campaign</th>
+                <th>Users</th>
+                <th>Username</th>
+                <th>Pause (hrs)</th>
+                <th>Total Hours</th>
+                <th>Total Calls</th>
+                <th>Success Transfers</th>
+                <th>Total Transfers</th>
+                <th>TPH</th>
+            </tr>
+        </thead>
+        <tbody class="table_result2"></tbody>
+    </table>
+
+    <!--start back-to-top-->
+    <button onclick="topFunction()" class="btn btn-danger btn-icon" id="back-to-top">
+        <i class="ri-arrow-up-line"></i>
+    </button>
+    <!--end back-to-top-->
+
+    <!--preloader-->
+    <div id="preloader">
+        <div id="status">
+            <div class="spinner-border text-primary avatar-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="customizer-setting d-none d-md-block">
+        <div class="btn-info rounded-pill shadow-lg btn btn-icon btn-lg p-2" data-bs-toggle="offcanvas" data-bs-target="#theme-settings-offcanvas" aria-controls="theme-settings-offcanvas">
+            <i class='mdi mdi-spin mdi-cog-outline fs-22'></i>
+        </div>
+    </div> -->
+
+    <!-- JAVASCRIPT -->
+    <script type="text/javascript" src="assets/js/jquery.min.js"></script>
+    <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="assets/libs/node-waves/waves.min.js"></script>
+    <script src="assets/libs/feather-icons/feather.min.js"></script>
+    <script src="assets/js/pages/plugins/lord-icon-2.1.0.js"></script>
+    <script src="assets/js/plugins.js"></script>
+
+    <!-- apexcharts -->
+    <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
+
+    <!-- Vector map-->
+    <script src="assets/libs/jsvectormap/js/jsvectormap.min.js"></script>
+    <script src="assets/libs/jsvectormap/maps/world-merc.js"></script>
+
+    <!--Swiper slider js-->
+    <script src="assets/libs/swiper/swiper-bundle.min.js"></script>
+
+    <!-- Dashboard init -->
+    <script src="assets/js/pages/dashboard-ecommerce.init.js"></script>
+
+    <!-- App js -->
+    <script src="assets/js/app.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.js"></script> -->
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script> -->
+    <script src="assets/js/xlsx.full.min.js"></script>
+    <script src="assets/js/toastr.min.js"></script>
+    <script src="assets/js/autologout.js"></script>
+    <script>
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-bottom-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
+            var current_username = $("#current_username").val();
+            $.ajax({
+                url: 'ajax/report/dashboard.php?action=selectcamp',
+                type: 'get',
+                data: {
+                    current_username: current_username
+                },
+                success: function(response) {
+                    console.log(response);
+                    var data = JSON.parse(response);
+                    if (data.status == 'Ok') {
+
+                        var record = data.data;
+
+                        $('#campaign').html('<option value="">-- Choose Campaign --</option>');
+                        record.forEach(function(arr, idx) {
+
+                            $('#campaign').append(`
+                                    <option value="${arr.campaign}">${arr.display_name}</option>
+                                `);
+                        });
+                    }
+                }
+            });
+            var overAllRecord;
+            var qcRecord;
+            $('body').on('click', '#getRecord', function() {
+
+
+                var startDate = $('#startDate').val();
+                var endDate = $('#endDate').val();
+                var campaign_name = $('#campaign').val();
+                var call_center = $('#call_center').val();
+                if (startDate == "") {
+                    toastr.warning('Please Choose Start date!');
+                    $('#startDate').focus();
+                } else if (endDate == "") {
+                    toastr.warning('Please Choose End date!');
+                    $('#endDate').focus();
+                } else if (campaign_name == "") {
+                    toastr.warning('Please Choose a Campaign!');
+                    $('#campaign').focus();
+                } else {
+                    $.ajax({
+                        url: 'ajax/report/dashboard.php?action=report',
+                        type: 'get',
+                        data: {
+                            startDate: startDate,
+                            endDate: endDate,
+                            campaign_name: campaign_name,
+                            call_center: call_center
+                        },
+                        success: function(response) {
+                            console.log(response);
+
+                            var data = JSON.parse(response);
+                            console.log(data);
+
+                            if (data.status == 'Ok') {
+
+                                // var record = data.data;
+                                overAllRecord = data;
+                                $('#report_type').val('agent').change();
+
+                                // agentWise();
+                                $.ajax({
+                                    url: 'ajax/qc/qc-details.php?action=scorecard',
+                                    type: 'get',
+                                    data: {
+                                        fromdatevalue: startDate,
+                                        todatevalue: endDate,
+                                        slctcampvalue: campaign_name,
+                                        call_center: call_center
+                                    },
+                                    success: function(response) {
+                                        console.log(response);
+                                        var data = JSON.parse(response);
+                                        console.log(data);
+
+                                        if (data.status == 'Ok') {
+                                            qcRecord = data.data;
+                                        }
+                                    }
+                                });
+                            } else {
+                                toastr.error('Error FOund!');
+
+                            }
+                        }
+                    }).then(function() {
+                        $.ajax({
+                            url: "ajax/report/dashboard.php?action=liveagent",
+                            type: "GET",
+                            data: {
+                                startDate: startDate,
+                                endDate: endDate,
+                                campaign_name: campaign_name,
+                                call_center: call_center
+                            },
+                            success: function(response) {
+                                console.log(response);
+                                var data = JSON.parse(response);
+
+                                if (data.status == 'Ok') {
+                                    var activeCount = data.data.length;
+                                    // $('#active_agent')
+                                    $('#active_agent').attr('data-target', activeCount).html(activeCount);
+
+                                }
+                            }
+                        });
+                    })
+                }
+
+            });
+
+            function agentWise() {
+                console.log(overAllRecord);
+
+                var record = overAllRecord.data;
+                var total_agent = record.length;
+                var total_calls = 0;
+                var overalltra = 0;
+                var overalltph = 0;
+                var overallbillable = 0;
+                var overallbph = 0;
+                var Hrs = 0;
+                var Transfer = 0;
+                var successtransfer = 0;
+                var medds = 0;
+                var realHr = 0;
+                var pause_hr = 0;
+                $('.table_result').html("");
+                record.forEach(function(arr, idx) {
+                    realHr += parseInt(arr.Hrs);
+                    total_calls += parseInt(arr.Totalcalls);
+                    Hrs += parseFloat(arr.Hrs / 3600);
+                    pause_hr += parseFloat(arr.pause_sec / 3600);
+                    Transfer += parseInt(arr.Transfer);
+                    successtransfer += parseInt(arr.successtransfer);
+                    medds += parseInt(arr.medds);
+                    if (arr.camp == 'EDU_TEST') {
+                        var camp_name = 'EDU_TRAINING';
+                    } else {
+                        var camp_name = arr.camp;
+                    }
+
+                    current_username = $("#current_username").val();
+                    if (current_username == 'PSPM') {
+
+                        // alert();
+
+                        $('.table_result').append(`
+                        <tr>
+                            <td>${camp_name}</td>
+                            <td>${arr.users}</td>
+                            <td>${arr.username}</td>
+                            <td>${parseFloat(arr.pause_sec/3600).toFixed(2)}</td>
+                            <td>${parseFloat(arr.Hrs/3600).toFixed(2)}</td>
+                            <td>${arr.Totalcalls}</td>
+                            <td>${arr.successtransfer}</td>
+                            <td>${parseFloat((arr.successtransfer)/parseFloat(arr.Hrs/3600)).toFixed(2)}</td>
+                        </tr>
+                    `);
+
+
+                    } else {
+
+                        $('.table_result').append(`
+                    <tr>
+                        <td>${camp_name}</td>
+                        <td style="cursor:pointer;" data-campaign_id="${camp_name}" data-agent="${arr.users}"  data-agentname="${arr.username}"class="user_stats text-primary">${arr.users}</td>
+                        <td>${arr.username}</td>
+                        <td>${parseFloat(arr.pause_sec/3600).toFixed(2)}</td>
+                        <td>${parseFloat(arr.Hrs/3600).toFixed(2)}</td>
+                        <td>${arr.Totalcalls}</td>
+                        <td>${arr.successtransfer}</td>
+                        <td>${arr.Transfer}</td>
+                        <td>${arr.medds}</td>
+                        <td>${parseFloat((arr.successtransfer)/parseFloat(arr.Hrs/3600)).toFixed(2)}</td>
+                        <td>${parseFloat((arr.Transfer)/parseFloat(arr.Hrs/3600)).toFixed(2)}</td>
+                       
+                    </tr>
+                    `);
+                    }
+
+
+                });
+                console.log(realHr);
+                // var hours = Math.floor(Hrs / 3600);
+                // var minutes = Math.floor((Hrs % 3600) / 60);
+
+                var hr_with_min = Hrs.toFixed(2);
+                var tph_percent = (parseFloat(successtransfer) / parseFloat(hr_with_min)).toFixed(2);
+                var medds_percent = (parseFloat(medds) / parseFloat(hr_with_min)).toFixed(2);
+                var bph_precent = parseFloat(Transfer / hr_with_min).toFixed(2);
+
+                overalltra = successtransfer + medds;
+                overalltph = parseFloat(tph_percent) + parseFloat(medds_percent);
+                // overallbillable =  
+                // overallbph = 
+
+
+                $('#total_calls').attr('data-target', total_calls).html(total_calls);
+                $('#total_hrs').attr('data-target', hr_with_min).html(hr_with_min);
+                $('#total_transfer').attr('data-target', successtransfer).html(successtransfer);
+                $('#medds_transfer').attr('data-target', medds).html(medds);
+                $('#total_agent').attr('data-target', total_agent).html(total_agent);
+                $('#tph_percent').attr('data-target', tph_percent).html(tph_percent);
+                $('#meddstph_percent').attr('data-target', medds_percent).html(medds_percent);
+                $('#bph_percent').attr('data-target', bph_precent).html(bph_precent);
+                $('#total_billable').attr('data-target', Transfer).html(Transfer);
+                $('.overalltra').attr('data-target', overalltra).html(overalltra);
+                $('.overalltph').attr('data-target', overalltph).html(overalltph);
+                $('.overallbillable').attr('data-target', overallbillable).html(overallbillable);
+                $('.overallbph').attr('data-target', overallbph).html(overallbph);
+                // console.log(total_calls);
+            }
+
+            function callCenterWise() {
+                console.log(qcRecord);
+
+                var record = overAllRecord.data;
+                console.log(record);
+
+                const result = {};
+                record.forEach(entry => {
+                    const centerCode = entry.users.slice(0, 4); // First 4 letters as dynamic center
+                    if (!result[centerCode]) {
+                        result[centerCode] = {
+                            total_calls: 0,
+                            Hrs: 0,
+                            Transfer: 0,
+                            successtransfer: 0,
+                            center: centerCode // you can replace with actual name if needed
+                        };
+                    }
+
+                    result[centerCode].total_calls += parseInt(entry.Totalcalls);
+                    result[centerCode].Hrs += parseFloat(entry.Hrs) / 3600;
+                    result[centerCode].Transfer += parseInt(entry.Transfer);
+                    result[centerCode].successtransfer += parseInt(entry.successtransfer);
+                });
+                console.log(result);
+
+                $('.table_result').html("");
+                $.each(result, function(idx, arr) {
+                    // console.log(arr);
+
+                    if (arr) {
+                        $('.table_result').append(`
+                        <tr>
+                                <td>${arr.center}</td>
+                                <td>${arr.Hrs.toFixed(2)}</td>
+                                <td>${arr.total_calls}</td>
+                                <td>${arr.successtransfer}</td>
+                                <td>${arr.Transfer}</td>
+                                <td>${parseFloat((arr.successtransfer)/parseFloat(arr.Hrs)).toFixed(2)}</td>
+                                <td>${parseFloat((arr.Transfer)/parseFloat(arr.Hrs)).toFixed(2)}</td>
+                                <td>${((arr.Transfer)/(arr.total_calls)).toFixed(2)}</td>
+                            </tr>
+                        `);
+                    }
+
+                });
+            }
+            var changeType;
+            $('body').on('change', '#report_type', function() {
+                var type = $(this).val();
+                changeType = type;
+                var current_username = $(this).data('user');
+                // alert(current_username);
+                if (type == 'agent') {
+                    $('.tablehead').html(`
+                            <tr>
+                                <th scope="col">Campaign Name</th>
+                                <th scope="col">Agent ID</th>
+                                <th scope="col">Agent Name</th>
+                                <th scope="col">Pause Hours</th>
+                                <th scope="col">Total Hours</th>
+                                <th scope="col">Total Calls</th>
+                                <th scope="col">Transfer</th>
+                                ${current_username != 'PSPM' ? '<th scope="col">Billable</th>' : ''}
+                                <th scope="col">MED DS Transfer</th>
+                                <th scope="col">TPH</th>
+                                ${current_username != 'PSPM' ? '<th scope="col">BPH</th>' : ''}
+                            </tr>
+                        `);
+                    agentWise();
+                } else if (type == 'callcenter') {
+                    $('.tablehead').html(`
+                            <tr>
+                                <th>Call Center</th>
+                                <th>Total Hours</th>
+                                <th>Total Calls</th>
+                                <th>Transfer</th>
+                                <th>Billable</th>
+                                <th>TPH</th>
+                                <th>BPH</th>
+                                <th>SPC</th>
+                            </tr>
+                        `);
+                    callCenterWise();
+
+                } else if (type == 'subcallcenter') {
+                    subCallCenter();
+                    $('.tablehead').html(`
+                        <tr>
+                            <th>Call Center</th>
+                            <th>Total Hours</th>
+                            <th>Total Calls</th>
+                            <th>Transfer</th>
+                            <th>Billable</th>
+                            <th>TPH</th>
+                            <th>BPH</th>
+                            <th>CT</th>
+                            <th>CTPH</th>
+                            <th>Scorecard</th>
+                            <th>QC</th>
+                            <th>QC%</th>
+                        </tr>
+                    `);
+                }
+            });
+
+           $('body').on('click', '#export_excel', function() {
+                const startDate = $('#startDate').val();
+                const endDate = $('#endDate').val();
+                const campaign_name = $('#campaign').val();
+                const call_center = $('#call_center').val();
+
+                if (!startDate || !endDate) {
+                    alert('Please select a date range');
+                    return;
+                }
+
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                const allDates = [];
+
+                while (start <= end) {
+                    allDates.push(new Date(start).toISOString().slice(0, 10));
+                    start.setDate(start.getDate() + 1);
+                }
+
+                const finalReport = [];
+                let completedRequests = 0;
+
+                $('.table_result2').html('<tr><td colspan="12">Loading data...</td></tr>');
+
+                allDates.forEach(date => {
+                    $.ajax({
+                        url: 'ajax/report/dashboard.php?action=report',
+                        type: 'GET',
+                        data: {
+                            startDate: date,
+                            endDate: date,
+                            campaign_name,
+                            call_center
+                        },
+                        success: function(response) {
+                            try {
+                                const data = JSON.parse(response);
+                                if (data.status === 'Ok' && Array.isArray(data.data)) {
+                                    finalReport.push(...data.data);
+                                }
+                            } catch (e) {
+                                console.error(`Error parsing response for ${date}`, e);
+                            }
+                        },
+                        error: function() {
+                            console.error(`Request failed for ${date}`);
+                        },
+                        complete: function() {
+                            completedRequests++;
+                            if (completedRequests === allDates.length) {
+                                if (finalReport.length === 0) {
+                                    $('.table_result2').html('<tr><td colspan="12">No data found</td></tr>');
+                                    return;
+                                }
+                                renderFinalTable(finalReport, campaign_name, startDate, endDate);
+                            }
+                        }
+                    });
+                });
+            });
+               function renderFinalTable(report, campaign_name, startDate, endDate) {
+                const grouped = {};
+                report.forEach(row => {
+                    const date = row.event_time ? row.event_time.split(' ')[0] : 'Invalid Date';
+                    if (!grouped[date]) grouped[date] = [];
+                    grouped[date].push(row);
+                });
+
+                const dates = Object.keys(grouped).sort();
+                let grandTotal = {
+                    pause_sec: 0,
+                    Hrs: 0,
+                    Totalcalls: 0,
+                    successtransfer: 0,
+                    Transfer: 0
+                };
+
+                $('.table_result2').html('');
+
+                dates.forEach(date => {
+                    const rows = grouped[date];
+                    let dateTotals = {
+                        pause_sec: 0,
+                        Hrs: 0,
+                        Totalcalls: 0,
+                        successtransfer: 0,
+                        Transfer: 0
+                    };
+
+                    $('.table_result2').append(`
+                        <tr style="background:#e8f4fc; font-weight:bold; text-align:center;">
+                            <td colspan="5">Date: ${date}</td>
+                        </tr>
+                    `);
+
+                    rows.forEach(row => {
+                        const camp_name = (row.camp === 'EDU_TEST') ? 'EDU_TRAINING' : row.camp;
+                        const pauseHrs = (row.pause_sec / 3600).toFixed(2);
+                        const totalHrs = (row.Hrs / 3600).toFixed(2);
+                        const tph = row.Hrs > 0 ? (row.successtransfer / (row.Hrs / 3600)).toFixed(2) : '0.00';
+                        const bph = row.Hrs > 0 ? (row.Transfer / (row.Hrs / 3600)).toFixed(2) : '0.00';
+                        const spc = row.Totalcalls > 0 ? (row.Transfer / row.Totalcalls).toFixed(2) : '0.00';
+                        console.log('meds:',row);
+
+                        $('.table_result2').append(`
+                            <tr>
+                                <td>${date}</td>
+                                <td>${camp_name}</td>
+                                <td>${row.users}</td>
+                                <td>${row.username}</td>
+                                <td>${pauseHrs}</td>
+                                <td>${totalHrs}</td>
+                                <td>${row.Totalcalls}</td>
+                                <td>${row.successtransfer}</td>
+                                <td>${row.Transfer}</td>
+
+                                <td>${tph}</td>
+                              
+                            </tr>
+                        `);
+
+                        dateTotals.pause_sec += parseFloat(row.pause_sec);
+                        dateTotals.Hrs += parseFloat(row.Hrs);
+                        dateTotals.Totalcalls += parseInt(row.Totalcalls);
+                        dateTotals.successtransfer += parseInt(row.successtransfer);
+                        dateTotals.Transfer += parseInt(row.Transfer);
+                    });
+
+                    Object.keys(dateTotals).forEach(key => grandTotal[key] += dateTotals[key]);
+
+                    $('.table_result2').append(`
+                        <tr style="background:#f6f6f6; font-weight:bold;">
+                            <td colspan="4">Subtotal (${date})</td>
+                            <td>${(dateTotals.pause_sec / 3600).toFixed(2)}</td>
+                            <td>${(dateTotals.Hrs / 3600).toFixed(2)}</td>
+                            <td>${dateTotals.Totalcalls}</td>
+                            <td>${dateTotals.successtransfer}</td>
+                            <td>${dateTotals.Transfer}</td>
+                            <td>${(dateTotals.successtransfer / (dateTotals.Hrs / 3600)).toFixed(2)}</td>
+                        
+                        </tr>
+                    `);
+                });
+
+                $('.table_result2').append(`
+                    <tr style="background:#ffe6cc; font-weight:bold;">
+                        <td colspan="4">Grand Total</td>
+                        <td>${(grandTotal.pause_sec / 3600).toFixed(2)}</td>
+                        <td>${(grandTotal.Hrs / 3600).toFixed(2)}</td>
+                        <td>${grandTotal.Totalcalls}</td>
+                        <td>${grandTotal.successtransfer}</td>
+                        <td>${grandTotal.Transfer}</td>
+                        <td>${(grandTotal.successtransfer / (grandTotal.Hrs / 3600)).toFixed(2)}</td>
+                       
+                    </tr>
+                    <tr style="background:#C8E6C9; color:#1B5E20; font-weight:bold;">
+                        <td colspan="12">Total Rows: ${report.length}</td>
+                    </tr>
+                `);
+
+                // Export table to Excel
+                const fileName = `${campaign_name} - ${startDate} to ${endDate}`;
+                const tableEl = document.getElementById('export_table_datewise');
+
+                if (tableEl) {
+                    const ws = XLSX.utils.table_to_sheet(tableEl);
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, 'Datewise Report');
+                    XLSX.writeFile(wb, `${fileName}.xlsx`);
+                } else {
+                    alert('Table not found for export');
+                }
+            }
+
+        });
+        // $('body').on('click', '#export_excel', function(){
+        //      var startDate = $('#startDate').val();
+        //     var endDate = $('#endDate').val();
+        //     var campaign_name = $('#campaign').val();
+        //     var call_center = $('#call_center').val();
+
+        //     var fileName = campaign_name+' - '+startDate;
+        //         var table = document.getElementById('export_table');
+        //         var ws = XLSX.utils.table_to_sheet(table);
+        //         var wb = XLSX.utils.book_new();
+        //         XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+        //         XLSX.writeFile(wb, fileName+'.xlsx');
+        // });
+
+            $('body').on('click', '.user_stats', function() {
+
+                var agent = $(this).data('agent');
+                var agentname = $(this).data('agentname');
+                var startDate = $('#startDate').val();
+                var endDate = $('#endDate').val();
+                var campaign_id = $('#campaign').val();
+
+                $('#userstatus').modal('show');
+                $('.userstatusdetails').html('<tr><td colspan="3">Loading...</td></tr>');
+                $('.total-count').text('');
+                $('.username').text(`${agent} : ${agentname}`);
+                $.ajax({
+                    url: 'ajax/report/user_stats_query.php',
+                    type: 'GET',
+                    data: {
+                        action: 'getuserstatsDetails',
+                        agent: agent,
+                        startDate: startDate,
+                        endDate: endDate,
+                        campaign_id: campaign_id
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log(response);
+                        let html = '';
+                        let totalCount = 0;
+
+                        if (response.stats && response.stats.length > 0) {
+                            response.stats.forEach(stat => {
+                                totalCount += parseInt(stat.count); // FIXED: use stat.count
+                            });
+
+                            response.stats.forEach(stat => {
+                                const percentage = ((stat.count / totalCount) * 100).toFixed(2); // FIXED
+
+                               var agentstatus =  stat.statusname;
+
+                                   if(agentstatus == 'NULL'){
+
+                                    agentstatus = 'NOT DISPOSED';
+                                   }else{
+
+                                    agentstatus = agentstatus;
+                                   }
+                                html += `
+                            <tr>
+                                <td>${agentstatus}</td>
+                                <td>${stat.count}</td>
+                                <td>${percentage}%</td>
+                            </tr>
+                        `;
+                            });
+
+                            $('.total-count').text(totalCount); // Display total count
+                        } else {
+                            html = '<tr><td colspan="3">No records found</td></tr>';
+                        }
+
+                        $('.userstatusdetails').html(html);
+                    }
+
+                });
+            });
+    </script>
+
+    
+</body>
+
+
+</html>
